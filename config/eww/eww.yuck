@@ -3,7 +3,7 @@
 ;; Maintaned by https://github.com/rxyhn
 
 ;; put path to aesthetic bar config files here ;;
-(defvar eww "$HOME/.local/bin/eww -c $HOME/.config/eww/bar")
+(defvar eww "/usr/bin/eww open -c $HOME/.config/eww/bar")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;							Widget Section's							 ;;	
@@ -14,12 +14,7 @@
 		 :space-evenly "false" 
 		 :spacing -15
   	(button :class "launcher_icon" 
-		   	:onclick "scripts/popup launcher"  "")))
-
-;; Workspaces Widgets ;;
-(defwidget workspaces []
-	(literal :content workspace))
-(deflisten workspace "scripts/workspace")
+		   	:onclick "scripts/popup launcher"  "󰣇")))
 
 ;; Battery Widgets ;;
 (defwidget bat []
@@ -60,8 +55,8 @@
 				   :max 101 
 				   :min 0))
   			(label :class "brightness-icon" 
-			  	   :text ""))))
-(defpoll current-brightness :interval "1s" "brightnessctl -m -d amdgpu_bl0 | awk -F, '{print substr($4, 0, length($4)-1)}' | tr -d '%'")
+			  	   :text "󰃡"))))
+(defpoll current-brightness :interval "1s" "brightnessctl -m -d intel_backlight | awk -F, '{print substr($4, 0, length($4)-1)}' | tr -d '%'")
 (defvar bright false)
 
 ;; Volume Widgets ;;
@@ -82,8 +77,8 @@
 			  :max 101 
 			  :min 0 
 			  :onchange "amixer -D pulse sset Master {}%" ))
-	(button   :onclick "scripts/popup audio"   :class "volume-icon" ""))))
-(defpoll current-volume :interval "1s" "amixer -D pulse sget Master | grep 'Left:' | awk -F'[][]' '{ print $2 }' | tr -d '%'")
+	(button   :onclick "scripts/popup audio"   :class "volume-icon" ""))))
+(defpoll current-volume :interval "1s" "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk -F':' '{printf($2*100)}'")
 (defvar volum false)
 
 ;; Control Panel Widgets ;;	
@@ -140,23 +135,23 @@
 
 	(button   	:class "button-bspres"  			
 				:tooltip "BSPWM Restart" 
-				:onclick "bspc wm -r" "" )
+				:onclick "bspc wm -r" "" )
 
   	(button		:class "button-reb"					
 	  			:tooltip "Reboot"		 
-				:onclick "reboot"	"")
+				:onclick "reboot"	"")
 
 	(button		:class "button-quit" 				
 				:tooltip "Logout" 		 
-				:onclick "killall bspwm" "")
+				:onclick "killall bspwm" "󰗽")
 
 	(button		:class "button-lock" 				
 				:tooltip "Lock Screen"	 
-				:onclick "betterlockscreen -l"	"")))
+				:onclick "betterlockscreen -l"	"")))
 
 	(button		:class "button-off"					
 				:tooltip "Shutdown"		 
-				:onclick "shutdown now"	""))))
+				:onclick "shutdown now"	""))))
 (defvar power false)
 
 ;; Top Widgets ;;
@@ -165,7 +160,7 @@
 			:space-evenly "false" 
 			:valign "start" 
 (launcher)
-(workspaces)))
+))
 
 ;; Bottom Widgets ;;
 (defwidget bottom []
@@ -197,27 +192,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bar Windows ;;
 (defwindow bar
-	:geometry (geometry :x "0" 
-						:y "0" 
-						:height "100%" 
-						:width "47px")
 	:monitor 0
-	:reserve (struts :distance "35px" 
-					 :side "left")
-	:wm-ignore false
+	:geometry (geometry :x "0" 
+		:y "0" 
+		:height "100%" 
+		:width "47px"
+	:anchor "top left")
+	:reserve (struts :distance "40px" :side "left")
 	:hexpand "false"
 	:vexpand "false"
+	:stacking "fg"
+	:exclusive false
 (bar))
 
 ;; Calendar Windows ;;
 (defwindow calendar
+	:monitor 0
 	:geometry (geometry :x "70px" 
 						:y "65%" 
 						:width "270px" 
 						:height "60px")
 (cal))
-
-
-
-
-
